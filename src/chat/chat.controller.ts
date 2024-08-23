@@ -1,5 +1,6 @@
-import { Controller, Render, Get, Res } from '@nestjs/common';
+import { Controller, Render, Get, Res, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller()
 export class ChatController {
@@ -11,6 +12,7 @@ export class ChatController {
     return {};
   }
 
+  @UseGuards(AuthGuard('local'))
   @Get('/api/chat')
   async chat(@Res() res) {
     const messages = await this.chatService.getMessages();

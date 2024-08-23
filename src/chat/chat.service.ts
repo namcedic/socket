@@ -14,6 +14,10 @@ export class ChatService {
   }
 
   async getMessages(): Promise<ChatEntity[]> {
-    return await this.chatRepository.find();
+    return await this.chatRepository.find({
+      relations: {
+        user: true,
+      },
+    });
   }
 }

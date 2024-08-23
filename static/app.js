@@ -1,9 +1,16 @@
 // /static/app.js
 
-const socket = io('http://localhost:3000');
+// for test only
+const token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNlZHJpY0BleGFtcGxlLmNvbSIsImlkIjo1LCJmaXJzdE5hbWUiOiJDZWRyaWMiLCJsYXN0TmFtZSI6Ik1yIiwiaWF0IjoxNzI0Mzg3MDY1fQ.9WDdT1OLYyvgCBTd_qa6Lbmift2xWv0LxRSL7btGjcw';
+
+const socket = io('http://localhost:3000', {
+  extraHeaders: {
+    Authorization: `Bearer ${token}`,
+  },
+});
 const msgBox = document.getElementById('exampleFormControlTextarea1');
 const msgCont = document.getElementById('data-container');
-const userName = document.getElementById('userName');
 
 //get old messages from the server
 const messages = [];
@@ -23,7 +30,8 @@ getMessages();
 //When a user press the enter key,send message.
 msgBox.addEventListener('keydown', (e) => {
   if (e.keyCode === 13) {
-    sendMessage({ userName: userName.value, text: e.target.value });
+    sendMessage(e.target.value);
+    // sendMessage({ userName: userName.value, text: e.target.value });
     e.target.value = '';
   }
 });
@@ -31,11 +39,9 @@ msgBox.addEventListener('keydown', (e) => {
 //Display messages to the users
 function loadDate(data) {
   let messages = '';
-  console.log(data[0].userName);
-  console.log(data[0].text);
   data.map((message) => {
     messages += ` <li class="bg-success p-2 rounded mb-2 text-light">
-      <span class="fw-bolder">${message.userName}</span>
+      <span class="fw-bolder">${message.user.firstName} ${message.user.lastName}</span>
       ${message.text}
     </li>`;
   });
@@ -45,6 +51,7 @@ function loadDate(data) {
 //socket.io
 //emit sendMessage event to send message
 function sendMessage(message) {
+  console.log(message);
   socket.emit('sendMessage', message);
 }
 //Listen to recMessage event to get the messages sent by users

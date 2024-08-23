@@ -9,6 +9,8 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
 import { ChatModule } from './chat/chat.module';
 // import { ServeStaticModule } from '@nestjs/serve-static';
 // import { join } from 'path';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { ChatModule } from './chat/chat.module';
     //   rootPath: join(__dirname, '..', 'static'), // Serve static files from the static directory
     // }),
     ChatModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],
