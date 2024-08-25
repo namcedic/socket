@@ -31,7 +31,7 @@ getMessages();
 msgBox.addEventListener('keydown', (e) => {
   if (e.keyCode === 13) {
     sendMessage(e.target.value);
-    // sendMessage({ userName: userName.value, text: e.target.value });
+    getAllMessages();
     e.target.value = '';
   }
 });
@@ -51,11 +51,15 @@ function loadDate(data) {
 //socket.io
 //emit sendMessage event to send message
 function sendMessage(message) {
-  console.log(message);
   socket.emit('sendMessage', message);
 }
+
+function getAllMessages() {
+  socket.emit('getAllMessages');
+}
+
 //Listen to recMessage event to get the messages sent by users
-socket.on('recMessage', (message) => {
+socket.on('receiveMessage', (message) => {
   // messages.push(message);
   loadDate(message);
 });

@@ -7,8 +7,6 @@ import { typeOrmConfig } from './database/typeorm.config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { ChatModule } from './chat/chat.module';
-// import { ServeStaticModule } from '@nestjs/serve-static';
-// import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 
@@ -26,9 +24,6 @@ import { AuthModule } from './auth/auth.module';
         return addTransactionalDataSource(new DataSource(options));
       },
     }),
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'static'), // Serve static files from the static directory
-    // }),
     ChatModule,
     AuthModule,
     UserModule,

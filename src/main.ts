@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { join } from 'path';
+import { swaggerConfig } from './common/configs/swagger.config';
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -10,6 +11,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'static'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
+  swaggerConfig(app);
   await app.listen(3000);
 }
 bootstrap();

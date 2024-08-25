@@ -13,7 +13,7 @@ import { ChatService } from '../chat/chat.service';
 import { CurrentSocketUser } from '../common/decorators/socket-user.decorator';
 import { AuthPayload } from '../common/types/auth.type';
 import { plainToInstance } from 'class-transformer';
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 @WebSocketGateway()
 export class AppGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -26,7 +26,6 @@ export class AppGateway
   @SubscribeMessage('sendMessage')
   async handleSendMessage(
     @CurrentSocketUser() user: AuthPayload,
-    client: Socket,
     @MessageBody() text: string,
   ): Promise<void> {
     const chat = plainToInstance(ChatEntity, {
@@ -34,22 +33,27 @@ export class AppGateway
       userId: user.id,
     });
     await this.chatService.createMessage(chat);
+  }
+
+  @SubscribeMessage('getAllMessages')
+  async getAllMessages(@CurrentSocketUser() user: AuthPayload): Promise<void> {
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
     const messages = await this.chatService.getMessages();
-    this.server.emit('recMessage', messages);
+    this.server.emit('receiveMessage', messages);
   }
 
   afterInit(server: Server) {
     this.logger.log('server', server);
-    //Do stuffs
   }
 
   handleDisconnect(client: Socket) {
     console.log(`Disconnected: ${client.id}`);
-    //Do stuffs
   }
 
   handleConnection(client: Socket) {
     console.log(`Connected ${client.id}`);
-    //Do stuffs
   }
 }
